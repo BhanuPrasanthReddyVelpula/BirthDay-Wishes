@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Ultimate Birthday Surprise 🎉</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+text-align:center;
+color:white;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+overflow:hidden;
+}
+
+section{
+display:none;
+height:100vh;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.active{
+display:flex;
+}
+
+button{
+padding:12px 25px;
+font-size:18px;
+border:none;
+border-radius:30px;
+background:#ff4e50;
+color:white;
+cursor:pointer;
+margin-top:20px;
+}
+
+/* intro */
+
+#intro h1{
+font-size:60px;
+animation:zoom 2s forwards;
+}
+
+@keyframes zoom{
+from{opacity:0; transform:scale(.3)}
+to{opacity:1; transform:scale(1)}
+}
+
+/* gift */
+
+.gift{
+font-size:130px;
+cursor:pointer;
+animation:bounce 1s infinite;
+}
+
+@keyframes bounce{
+0%{transform:translateY(0)}
+50%{transform:translateY(-20px)}
+100%{transform:translateY(0)}
+}
+
+/* cake */
+
+.cake{
+font-size:150px;
+}
+
+.candle{
+font-size:40px;
+cursor:pointer;
+}
+
+/* knife */
+
+.knife{
+font-size:70px;
+position:absolute;
+top:-60px;
+left:50%;
+transform:translateX(-50%);
+transition:1s;
+}
+
+.cut{
+top:40px;
+}
+
+/* balloons */
+
+.balloon{
+position:absolute;
+font-size:50px;
+cursor:pointer;
+}
+
+/* photo */
+
+#photos img{
+width:300px;
+height:350px;
+border-radius:15px;
+box-shadow:0 0 20px black;
+object-fit:cover;
+}
+
+/* typing message */
+
+#message{
+font-size:28px;
+width:70%;
+min-height:80px;
+}
+
+/* final */
+
+#final{
+background:black;
+}
+
+/* confetti */
+
+.confetti{
+position:absolute;
+width:8px;
+height:8px;
+background:red;
+animation:fall 5s linear infinite;
+}
+
+@keyframes fall{
+0%{transform:translateY(-100px)}
+100%{transform:translateY(100vh)}
+}
+
+/* fireworks */
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- INTRO -->
+
+<section id="intro" class="active">
+
+<h1>A Special Birthday Surprise</h1>
+<button onclick="next('gift')">Start</button>
+
+</section>
+
+<!-- GIFT -->
+
+<section id="gift">
+
+<div class="gift" onclick="next('candles')">🎁</div>
+<h2>Tap the Gift</h2>
+
+</section>
+
+<!-- CANDLES -->
+
+<section id="candles">
+
+<div class="cake">
+<div class="candle" onclick="blow()">🕯️🕯️🕯️</div>
+🎂
+</div>
+
+<h2>Click on above Candles</h2>
+
+</section>
+
+<!-- CUT CAKE -->
+
+<section id="cake">
+
+<div style="position:relative" class="cake">
+
+<div id="knife" class="knife">🔪</div>
+🎂
+
+</div>
+
+<button onclick="cutCake()">Cut Cake</button>
+
+</section>
+
+<!-- BALLOON GAME -->
+
+<section id="game">
+
+<h2>Pop All Balloons 🎈</h2>
+
+</section>
+
+<!-- MESSAGE -->
+
+<section id="love">
+
+<h1>Special Message 💌</h1>
+
+<div id="message"></div>
+
+<button onclick="next('photos')">Next</button>
+
+</section>
+
+<!-- PHOTO GALLERY -->
+
+<section id="photos">
+
+<h1>Our Memories 📸</h1>
+
+<img id="slide" src="WhatsApp Image 2026-03-10 at 11.18.49 AM.jpeg">
+
+<button onclick="next('final'); celebration()">Final Surprise</button>
+
+</section>
+
+<!-- FINAL -->
+
+<section id="final">
+
+<h1 style="font-size:40px;">🎉 HAPPY BIRTHDAY 🎉</h1>
+
+<h2>Nanna</h2>
+
+<p>May your life be filled with happiness and success 🚀</p>
+
+</section>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_7e9e8fa9d7.mp3">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<script>
+
+/* page switch */
+
+function next(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+document.getElementById("music").play();
+}
+
+/* candles */
+
+function blow(){
+
+voiceWish();
+
+setTimeout(()=>{next("cake")},1500);
+
+}
+
+/* cake cut */
+
+function cutCake(){
+
+document.getElementById("knife").classList.add("cut");
+
+setTimeout(()=>{
+
+startGame();
+next("game");
+
+},1000);
+
+}
+
+/* voice wish */
+
+function voiceWish(){
+
+let msg="Happy Birthday Nanna. May your life be filled with happiness and success.";
+
+let speech=new SpeechSynthesisUtterance(msg);
+
+speech.rate=.9;
+speech.pitch=1.2;
+
+speechSynthesis.speak(speech);
+
+}
+
+/* balloon game */
+
+let score=0;
+
+function startGame(){
+
+for(let i=0;i<10;i++){
+
+let b=document.createElement("div");
+
+b.className="balloon";
+
+b.innerHTML="🎈";
+
+b.style.left=Math.random()*90+"%";
+b.style.top=Math.random()*80+"%";
+
+b.onclick=()=>{
+
+b.remove();
+score++;
+
+if(score>=10){
+
+next("love");
+typeMessage();
+
+}
+
+};
+
+document.body.appendChild(b);
+
+}
+
+}
+
+/* typing message */
+
+let text="Happy Birthday! You are an amazing person and I wish your life to be full of happiness, success and love.";
+
+let i=0;
+
+function typeMessage(){
+
+let box=document.getElementById("message");
+
+let interval=setInterval(()=>{
+
+box.innerHTML+=text[i];
+
+i++;
+
+if(i>=text.length) clearInterval(interval);
+
+},50);
+
+}
+
+/* slideshow */
+
+let photos=[
+"WhatsApp Image 2026-03-10 at 11.18.49 AM.jpeg",
+"WhatsApp Image 2026-03-10 at 11.18.48 AM (1).jpeg",
+"WhatsApp Image 2026-03-10 at 11.18.48 AM.jpeg",
+"WhatsApp Image 2026-03-10 at 11.18.49 AM (1).jpeg",
+"WhatsApp Image 2026-03-10 at 11.19.52 AM.jpeg"
+];
+
+let index=0;
+
+setInterval(()=>{
+
+let img=document.getElementById("slide");
+
+if(img){
+
+index++;
+if(index>=photos.length) index=0;
+
+img.src=photos[index];
+
+}
+
+},2000);
+
+/* confetti */
+
+function celebration(){
+
+for(let i=0;i<120;i++){
+
+let c=document.createElement("div");
+
+c.className="confetti";
+
+c.style.left=Math.random()*100+"%";
+
+c.style.background="hsl("+Math.random()*360+",100%,50%)";
+
+c.style.animationDuration=3+Math.random()*4+"s";
+
+document.body.appendChild(c);
+
+}
+
+}
+
+/* fireworks */
+
+const canvas=document.getElementById("fireworks");
+
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+
+function firework(){
+
+for(let i=0;i<80;i++){
+
+particles.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height/2,
+
+vx:(Math.random()-.5)*8,
+vy:(Math.random()-.5)*8,
+
+life:100
+
+});
+
+}
+
+}
+
+function animate(){
+
+ctx.fillStyle="rgba(0,0,0,0.15)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+particles.forEach((p,i)=>{
+
+p.x+=p.vx;
+p.y+=p.vy;
+p.life--;
+
+ctx.fillStyle="hsl("+Math.random()*360+",100%,60%)";
+ctx.fillRect(p.x,p.y,3,3);
+
+if(p.life<=0) particles.splice(i,1);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+setInterval(firework,1200);
+
+animate();
+
+</script>
+
+</body>
+</html>
+```
